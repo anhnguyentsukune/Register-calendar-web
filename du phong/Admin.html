@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang Quản Trị</title>
+    <link rel="stylesheet" href="./CSS/Style.css">
+
+</head>
+<body data-role="admin" style="display:none">
+    <header>
+        <h1>TRANG QUẢN TRỊ LỊCH LÀM VIỆC</h1>
+        <nav>
+            <a href="/wordpress">Trang chủ</a>
+            <a href="/wordpress/user">Nhân viên</a>
+        </nav>
+    </header>
+
+    <div class="admin-options">
+        <button id="personalBtn" class="active">Cá nhân</button>
+        <button id="allUsersBtn">Xem tất cả</button>
+    </div>
+
+    <!-- Phần cá nhân -->
+    <section id="personalView" class="view-section active-view">
+        <div class="form-container">
+            <div class="form-group">
+                <label for="userName">Họ và tên:</label>
+                <input type="text" id="userName" value="Y.H" readonly>
+            </div>
+            
+            <div class="form-group">
+                <label for="selectDate">Chọn ngày bắt đầu tuần:</label>
+                <input type="date" id="selectDate">
+            </div>
+            
+            <button id="generateSchedule">Lưu</button>
+            <button id="loadScheduleBtn">Xem lịch</button>
+        </div>
+        
+        <div id="scheduleContainer" style="display: none;">
+            <div class="form-container">
+                <h2>Lịch làm việc tuần từ <span id="weekRange"></span></h2>
+                <table class="schedule-table" id="scheduleTable">
+                    <thead>
+                        <tr>
+                            <th>Thứ</th>
+                            <th>Ca làm việc</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scheduleBody"></tbody>
+                </table>
+                <button id="saveSchedule">Lưu lịch</button>
+                <button id="clearSchedule">Xoá lịch</button>
+                <div class="success-message" id="successMessage">Lịch đã được lưu!</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Phần xem tất cả -->
+    <section id="allUsersView" style="display:none;">
+        <div class="filter-container">
+            <label for="filterWeek">Lọc theo tuần:</label>
+            <input type="week" id="filterWeek">
+            <button id="applyFilter">Áp dụng</button>
+        </div>
+        
+        <h2>Tổng hợp lịch làm việc</h2>
+        <div id="allSchedulesContainer">
+        </div>
+    </section>
+
+    <script src="JS/lichcanhan.js"></script>
+    <script src="JS/tonghoplich.js"></script>
+
+</body>
+</html>

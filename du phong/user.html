@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng ký giờ làm việc</title>
+</head>
+<body data-role="user"  >
+    <header>
+        <h1>ĐĂNG KÝ GIỜ LÀM VIỆC</h1>
+        <nav>
+            <a href="/wordpress">Trang chủ</a>
+            <a href="/wordpress/user">Nhân viên</a>
+        </nav>
+    </header>
+    <!-- phần cá nhân -->
+    <div class="view-section active-view">
+        <div class="form-container">
+            <form action="/submit-form" method="post">
+                <div class="form-group">
+                    <label for="userName">Họ và tên:</label>
+                    <input type="text" id="userName">
+                </div>
+        
+                <div class="form-group">
+                    <label for="selectDate">Chọn ngày bắt đầu tuần làm việc:</label>
+                    <input type="date" id="selectDate">
+                </div>
+        
+                <button id="generateSchedule" type="submit">Lưu</button>
+                <button id="loadScheduleBtn">Xem lịch</button>
+            </form>
+        </div>
+    
+    
+        <div id="scheduleContainer">
+            <div class="form-container">
+                <h2>Lịch làm việc tuần từ <span id="weekRange"></span></h2>
+                <table class="schedule-table" id="scheduleTable">
+                    <thead>
+                        <tr>
+                            <th>Thứ</th>
+                            <th>Ca làm việc</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scheduleBody">
+                        <!-- Schedule rows will be generated here -->
+                    </tbody>
+                </table>
+    
+                <button id="saveSchedule" style="margin-top: 15px;">Lưu lịch</button>
+                <button id="clearSchedule" style="margin-left: 5px;">Xoá lịch</button>
+                <div class="success-message" id="successMessage">Lịch làm việc đã được lưu thành công!</div>
+    
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<!-- 
+Tiếp theo: 
+
+1. Xử lý thêm form vào HTML
+2. Tạo file php hoặc page để xử lý dữ liệu submit xuống máy chủ
+3. Lấy dữ liệu này lưu vào database
+-->
