@@ -26,29 +26,25 @@ get_header();
             ?>
             <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/work-calendar/CSS/Style.css">
                 <header>
-                    <h1>TRANG QUẢN TRỊ LỊCH LÀM VIỆC</h1>
+                    <h1>ĐĂNG KÝ LỊCH LÀM VIỆC </h1>
                 </header>
 
                 <div class="admin-options">
                     <button id="personalBtn" class="active">Cá nhân</button>
-                    <button id="allUsersBtn">Xem tất cả</button>
+                    <button id="allUsersBtn">Tổng hợp lịch</button>
                 </div>
 
                 <!-- Phần cá nhân -->
                 <section id="personalView" class="view-section active-view">
-            
+                <span id="loggedInUserName" style="display: none;"><?php echo wp_get_current_user()->display_name; ?></span>
                         <form action="/wordpress/" method="get" class="form-container">
-                            <div class="form-group">
-                                <label for="userName">Họ và tên:</label>
-                                <input type="text" id="userName" value="Y.H" readonly name="userName">
-                            </div>
-                
+               
                             <div class="form-group">
                                 <label for="selectDate">Chọn ngày bắt đầu tuần:</label>
                                 <input type="date" id="selectDate" name="selectDate" value="<?php echo isset($_GET['selectDate']) ? esc_attr($_GET['selectDate']) : ''; ?>">
                             </div>
                 
-                            <button id="generateSchedule">Lưu</button>
+                            <button type="button" id="generateSchedule">Lưu</button>
                             <button type="submit" id="loadScheduleBtn">Xem lịch</button>
                         </form>
                 
@@ -64,16 +60,56 @@ get_header();
                                     </thead>
                                     <tbody id="scheduleBody">
                                         <!-- Dùng mã PHP get value trên form submit selectDate -->
-                                        <!-- Kết nối database và select thông tin đã đăng ksy theo giá trị form submit -->
+                                        <!-- Kết nối database và select thông tin đã đăng ký theo giá trị form submit -->
                                         <!-- Sau khi có kết quả lấy lên từ database thì hiển thị ra table -->
                                         <?php 
-                                        
+                                        if (isset($_GET['selectDate'])) {
+                                            
+                                                $current_user = wp_get_current_user();
+                                                $user_id = $current_user->ID;
+
+                                                // Ngày bắt đầu tuần
+                                                $startDate = sanitize_text_field($_GET['selectDate']);
+
+                                                // Tên bảng trong database
+                                                $table_name = $wpdb->prefix . 'work_calenda';
+
+                                                // Truy vấn lịch theo user_id + ngày
+                                                $row = $wpdb->get_row(
+                                                    $wpdb->prepare(
+                                                        "SELECT * FROM $table_name WHERE userID = %d AND DateSelected = %s",
+                                                        $user_id,
+                                                        $startDate
+                                                    )
+                                                );
+
+                                                if ($row) {
+                                                    
+                                                    $shifts = json_decode($row->shifts, true); // Giả sử shifts lưu kiểu JSON như ["Sáng", "Chiều", "Tối", ...]
+                                                        $debugPath = WP_CONTENT_DIR . '/uploads/debug-shifts.txt';
+                                                        file_put_contents($debugPath, print_r($shifts, true));
+                                                        file_put_contents($debugPath, "Raw shifts: " . var_export($row->shifts, true) . "\n", FILE_APPEND);
+                                                    $days = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'];
+
+                                                    foreach ($days as $index => $day) {
+                                                        $shift = isset($shifts[$index]) ? esc_html($shifts[$index]) : '—';
+                                                        echo "<tr><td>$day</td><td>$shift</td></tr>";
+                                                    }
+
+                                                    echo "<script>
+                                                        document.getElementById('scheduleContainer').style.display = 'block';
+                                                        document.getElementById('weekRange').innerText = '$startDate';
+                                                    </script>";
+                                                } else {
+                                                    echo "<tr><td colspan='2'>Không có dữ liệu lịch làm việc.</td></tr>";
+                                                }
+                                            }
                                         ?>
                                     </tbody>
                                 </table>
                                 <form id="scheduleFormdata" action="/wordpress/submit-form" method="POST">
                                     <input type="hidden" id="formAction" name="action" value="">
-                                    <input type="hidden" id="hiddenUserName" name="userName">
+                                    <input type="hidden" id="hiddenUserID" name="user_id" value="<?php echo get_current_user_id(); ?>">
                                     <input type="hidden" id="hiddenSelectDate" name="startDate">
                                     <input type="hidden" id="hiddenShifts" name="shifts">
                                     <button type="submit" id="saveSchedule">Lưu lịch</button>
