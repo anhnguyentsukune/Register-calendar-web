@@ -22,6 +22,7 @@ global $wpdb;
 
     if ($action === 'delete') {
         // Xoá lịch
+        error_log('Dữ liệu deleteeeeeeeeeeeeeeeeeeeeeeeeeeee: ' .$action);
         $deleted = $wpdb->delete(
             $table,
             [
@@ -30,6 +31,7 @@ global $wpdb;
             ],
             ['%d', '%s']
         );
+        error_log('Dữ liệu deleteeeeeeeeeeeeeeeeeeeeeeeeeeee: ' .$deleted);
     } else if ($action === 'save') {
 
         $shift_data = [

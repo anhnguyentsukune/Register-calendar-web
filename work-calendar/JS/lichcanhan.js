@@ -117,8 +117,8 @@ function clearSchedule() {
 
     // Submit form
     document.querySelector("#scheduleFormdata").submit();
-    document.getElementById('scheduleBody').innerHTML = '';
-    document.getElementById('scheduleContainer').style.display = 'none';
+    // document.getElementById('scheduleBody').innerHTML = '';
+    // document.getElementById('scheduleContainer').style.display = 'none';
 }
 
 function saveSchedule() {

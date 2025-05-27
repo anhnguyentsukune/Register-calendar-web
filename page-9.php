@@ -44,7 +44,7 @@ get_header();
                                 <input type="date" id="selectDate" name="selectDate" value="<?php echo isset($_GET['selectDate']) ? esc_attr($_GET['selectDate']) : ''; ?>">
                             </div>
                 
-                            <button type="button" id="generateSchedule">Lưu</button>
+                            <button type="button" id="generateSchedule">Tạo lịch</button>
                             <button type="submit" id="loadScheduleBtn">Xem lịch</button>
                         </form>
                 
@@ -85,16 +85,29 @@ get_header();
 
                                                 if ($row) {
                                                     
-                                                    $shifts = json_decode($row->shifts, true); // Giả sử shifts lưu kiểu JSON như ["Sáng", "Chiều", "Tối", ...]
-                                                        $debugPath = WP_CONTENT_DIR . '/uploads/debug-shifts.txt';
-                                                        file_put_contents($debugPath, print_r($shifts, true));
-                                                        file_put_contents($debugPath, "Raw shifts: " . var_export($row->shifts, true) . "\n", FILE_APPEND);
-                                                    $days = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'];
+                                                    $shifts1 = $row->Mo;
+                                                    $shifts2 = $row->Tue;
+                                                    $shifts3 = $row->Wed;
+                                                    $shifts4 = $row->Th;
+                                                    $shifts5 = $row->Fr;
+                                                    $shifts6 = $row->Sa;
+                                                    
+                                                    // Giả sử shifts lưu kiểu JSON như ["Sáng", "Chiều", "Tối", ...]
+                                                        // $debugPath = WP_CONTENT_DIR . '/uploads/debug-shifts.txt';
+                                                        // file_put_contents($debugPath, print_r($shifts, true));
+                                                        // file_put_contents($debugPath, "Raw shifts: " . var_export($row->shifts, true) . "\n", FILE_APPEND);
+                                                    // $days = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'];
 
-                                                    foreach ($days as $index => $day) {
-                                                        $shift = isset($shifts[$index]) ? esc_html($shifts[$index]) : '—';
-                                                        echo "<tr><td>$day</td><td>$shift</td></tr>";
-                                                    }
+                                                    // foreach ($days as $index => $day) {
+                                                    //     // $shift = isset($shifts[$index]) ? esc_html($shifts[$index]) : '—';
+                                                    //     echo "<tr><td>$day</td><td>$shifts</td></tr>";
+                                                    // }
+                                                    echo "<tr><td>Thứ 2</td><td>$shifts1</td></tr>";
+                                                    echo "<tr><td>Thứ 3</td><td>$shifts2</td></tr>";
+                                                    echo "<tr><td>Thứ 4</td><td>$shifts3</td></tr>";
+                                                    echo "<tr><td>Thứ 5</td><td>$shifts4</td></tr>";
+                                                    echo "<tr><td>Thứ 6</td><td>$shifts5</td></tr>";
+                                                    echo "<tr><td>Thứ 7</td><td>$shifts6</td></tr>";
 
                                                     echo "<script>
                                                         document.getElementById('scheduleContainer').style.display = 'block';
@@ -110,7 +123,7 @@ get_header();
                                 <form id="scheduleFormdata" action="/wordpress/submit-form" method="POST">
                                     <input type="hidden" id="formAction" name="action" value="">
                                     <input type="hidden" id="hiddenUserID" name="user_id" value="<?php echo get_current_user_id(); ?>">
-                                    <input type="hidden" id="hiddenSelectDate" name="startDate">
+                                    <input type="hidden" id="hiddenSelectDate" name="startDate" value="<?php echo isset($_GET['selectDate']) ? esc_attr($_GET['selectDate']) : ''; ?>">
                                     <input type="hidden" id="hiddenShifts" name="shifts">
                                     <button type="submit" id="saveSchedule">Lưu lịch</button>
                                     <button type="submit" id="clearSchedule">Xoá lịch</button>
