@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const role = document.body.getAttribute('data-role');
     const scheduleContainer = document.getElementById('scheduleContainer');
 
+
     // Bắt sự kiện khi nhấn nút "Lưu" để tạo lịch tạm
     document.getElementById('generateSchedule').addEventListener('click', function (event) {
 
@@ -65,7 +66,7 @@ function normalizeName(name) {
             globalStartOfWeek = startOfWeek;
             globalEndOfWeek = endOfWeek;
 
-        document.getElementById('weekRange').textContent = `của ${userName} ${formatDate(startOfWeek)} đến ${formatDate(endOfWeek)}`;
+        document.getElementById('weekRange').textContent = `của ${userName} từ ${formatDate(startOfWeek)} đến ${formatDate(endOfWeek)}`;
 
         const optionFragment = document.createDocumentFragment();
         const shifts = [
@@ -96,8 +97,9 @@ function normalizeName(name) {
             const shiftSelect = document.createElement('select');
             shiftSelect.className = 'shift-select';
             shiftSelect.appendChild(optionFragment.cloneNode(true));
-
-            if (currentDate < startDate) {
+            
+            const startDateobj = new Date(startDate);
+            if (currentDate < startDateobj) {
                 shiftSelect.value = 'rest';
                 shiftSelect.disabled = true;
                 shiftSelect.classList.add('disabled-shift');// hàm này có vấn đề
@@ -111,7 +113,6 @@ function normalizeName(name) {
 
 function formatDate(date) {
     return date.toLocaleDateString('vi-VN', {
-        weekday: 'short',
         day: '2-digit',
         month: '2-digit',
         year: 'numeric'
@@ -123,8 +124,6 @@ function clearSchedule() {
 
     // Submit form
     document.querySelector("#scheduleFormdata").submit();
-    // document.getElementById('scheduleBody').innerHTML = '';
-    // document.getElementById('scheduleContainer').style.display = 'none';
 }
 
 function saveSchedule() {

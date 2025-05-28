@@ -50,7 +50,7 @@ get_header();
                 
                         <div id="scheduleContainer" style="display: none;">
                             <div class="form-container">
-                                <h2>Lịch làm việc tuần từ <span id="weekRange"></span></h2>
+                                <h2>Lịch làm việc tuần <span id="weekRange"></span></h2>
                                 <table class="schedule-table" id="scheduleTable">
                                     <thead>
                                         <tr>
@@ -68,8 +68,18 @@ get_header();
                                                 $current_user = wp_get_current_user();
                                                 $user_id = $current_user->ID;
 
-                                                // Ngày bắt đầu tuần
+                                                // Ngày được chọn
                                                 $startDate = sanitize_text_field($_GET['selectDate']);
+
+                                                $date = new DateTime($selectDate);
+                                                $dayOfWeek = $date->format('w'); // Chủ nhật = 0, Thứ 2 = 1, ..., Thứ 7 = 6
+                                                $startOfWeek = clone $date;
+                                                $startOfWeek->modify('-' . ($dayOfWeek == 0 ? 6 : $dayOfWeek - 1) . ' days');
+                                                $endOfWeek = clone $startOfWeek;
+                                                $endOfWeek->modify('+5 days');
+
+                                                $startWeekStr = $startOfWeek->format('Y-m-d');
+                                                $endWeekStr = $endOfWeek->format('Y-m-d');
 
                                                 // Tên bảng trong database
                                                 $table_name = $wpdb->prefix . 'work_calenda';
@@ -77,42 +87,38 @@ get_header();
                                                 // Truy vấn lịch theo user_id + ngày
                                                 $row = $wpdb->get_row(
                                                     $wpdb->prepare(
-                                                        "SELECT * FROM $table_name WHERE userID = %d AND DateSelected = %s",
+                                                        "SELECT * FROM $table_name WHERE userID = %d AND StartWeek = %s AND EndWeek = %s",
                                                         $user_id,
-                                                        $startDate
+                                                        $startWeekStr,
+                                                        $endWeekStr
                                                     )
                                                 );
 
                                                 if ($row) {
-                                                    
-                                                    $shifts1 = $row->Mo;
-                                                    $shifts2 = $row->Tue;
-                                                    $shifts3 = $row->Wed;
-                                                    $shifts4 = $row->Th;
-                                                    $shifts5 = $row->Fr;
-                                                    $shifts6 = $row->Sa;
-                                                    
-                                                    // Giả sử shifts lưu kiểu JSON như ["Sáng", "Chiều", "Tối", ...]
-                                                        // $debugPath = WP_CONTENT_DIR . '/uploads/debug-shifts.txt';
-                                                        // file_put_contents($debugPath, print_r($shifts, true));
-                                                        // file_put_contents($debugPath, "Raw shifts: " . var_export($row->shifts, true) . "\n", FILE_APPEND);
-                                                    // $days = ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'Chủ nhật'];
+                
+                                                    // $shifts1 = $row->Mo;
+                                                    // $shifts2 = $row->Tue;
+                                                    // $shifts3 = $row->Wed;
+                                                    // $shifts4 = $row->Th;
+                                                    // $shifts5 = $row->Fr;
+                                                    // $shifts6 = $row->Sa;
+                                                    // echo "<tr><td>Thứ 2</td><td>$shifts1</td></tr>";
+                                                    // echo "<tr><td>Thứ 3</td><td>$shifts2</td></tr>";
+                                                    // echo "<tr><td>Thứ 4</td><td>$shifts3</td></tr>";
+                                                    // echo "<tr><td>Thứ 5</td><td>$shifts4</td></tr>";
+                                                    // echo "<tr><td>Thứ 6</td><td>$shifts5</td></tr>";
+                                                    // echo "<tr><td>Thứ 7</td><td>$shifts6</td></tr>";
 
-                                                    // foreach ($days as $index => $day) {
-                                                    //     // $shift = isset($shifts[$index]) ? esc_html($shifts[$index]) : '—';
-                                                    //     echo "<tr><td>$day</td><td>$shifts</td></tr>";
-                                                    // }
-                                                    echo "<tr><td>Thứ 2</td><td>$shifts1</td></tr>";
-                                                    echo "<tr><td>Thứ 3</td><td>$shifts2</td></tr>";
-                                                    echo "<tr><td>Thứ 4</td><td>$shifts3</td></tr>";
-                                                    echo "<tr><td>Thứ 5</td><td>$shifts4</td></tr>";
-                                                    echo "<tr><td>Thứ 6</td><td>$shifts5</td></tr>";
-                                                    echo "<tr><td>Thứ 7</td><td>$shifts6</td></tr>";
+                                                        $days = ['Mo' => 'Thứ 2', 'Tue' => 'Thứ 3', 'Wed' => 'Thứ 4', 'Th' => 'Thứ 5', 'Fr' => 'Thứ 6', 'Sa' => 'Thứ 7'];
 
-                                                    echo "<script>  
+                                                        foreach ($days as $key => $label) {
+                                                            $shift = isset($row->$key) ? esc_html($row->$key) : '—';
+                                                            echo "<tr><td>$label</td><td>$shift</td></tr>";
+                                                        }
+                                                        echo "<script>  
                                                         document.getElementById('scheduleContainer').style.display = 'block';
-                                                        document.getElementById('weekRange').innerText = '$startDate';
-                                                    </script>";
+                                                        document.getElementById('weekRange').innerText ='lịch làm việc tuần của bạn';
+                                                        </script>";
                                                 } else {
                                                     echo "<tr><td colspan='2'>Không có dữ liệu lịch làm việc.</td></tr>";
                                                 }
@@ -147,8 +153,8 @@ get_header();
                     <div id="allSchedulesContainer">
                     </div>
                 </section>
-            <script src="<?php echo get_template_directory_uri(); ?>/work-calendar/JS/lichcanhan.js"></script>
         </div>
+        <script src="<?php echo get_template_directory_uri(); ?>/work-calendar/JS/lichcanhan.js"></script>
         <?php if ( get_edit_post_link() ) : ?>
             <footer class="entry-footer">
                 <?php edit_post_link(); ?>

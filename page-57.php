@@ -5,11 +5,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
     $userName = $_POST['userName'] ?? '';
     $startDate = $_POST['startDate'] ?? '';
-    $startofweek = $_POST['startOfWeek'] ?? '';
+    $startOfWeek = $_POST['startOfWeek'] ?? '';
     $endOfWeek = $_POST['endOfWeek'] ?? '';
-    error_log('Dữ liệu startDate request: ' .$$_POST['startDate']);
-    error_log('Dữ liệu startOfWeek request: ' .$$_POST['startOfWeek']);
-    error_log('Dữ liệu endOfWeek request: ' .$$_POST['endOfWeek']);
+    error_log('Dữ liệu startDate request: ' .$_POST['startDate']);
+    error_log('Dữ liệu startOfWeek request: ' .$_POST['startOfWeek']);
+    error_log('Dữ liệu endOfWeek request: ' .$_POST['endOfWeek']);
 
     $shifts_json = $_POST['shifts'] ?? '[]';
     $shifts_json = stripslashes($shifts_json);
@@ -56,7 +56,7 @@ global $wpdb;
        
         $exists = $wpdb->get_var($wpdb->prepare(
             "SELECT COUNT(*) FROM $table WHERE userID = %s AND StartWeek = %s AND EndWeek = %s",
-            $userid, $startWeek, $endWeek
+            $userid, $startOfWeek, $endOfWeek
         ));
         error_log('Dữ liệu exists: ' .$exists);
         // Nếu chưa có thì thêm mới
@@ -67,8 +67,7 @@ global $wpdb;
                 'StartWeek' => $startOfWeek,
                 'EndWeek' => $endOfWeek,
             ], $shift_data));
-                    error_log('Dữ liệu save: ' .$save);
-
+            
         } else {
             // Nếu đã có thì cập nhật ca làm
             $wpdb->update(
