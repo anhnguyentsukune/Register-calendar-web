@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Bắt sự kiện khi nhấn "Lưu lịch"
     document.getElementById('saveSchedule').addEventListener('click', function (event) {
-        event.preventDefault();
+    console.log('Nút Lưu lịch được nhấn');
     document.getElementById('formAction').value = 'save';
 
         saveSchedule();
@@ -35,6 +35,9 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });  
 });
+
+let globalStartOfWeek = null;
+let globalEndOfWeek = null;
 
 // Hàm lấy tên người dùng từ input
 function getUserName() {
@@ -58,6 +61,9 @@ function normalizeName(name) {
 
         const endOfWeek = new Date(startOfWeek);
         endOfWeek.setDate(startOfWeek.getDate() + 5);
+
+            globalStartOfWeek = startOfWeek;
+            globalEndOfWeek = endOfWeek;
 
         document.getElementById('weekRange').textContent = `của ${userName} ${formatDate(startOfWeek)} đến ${formatDate(endOfWeek)}`;
 
@@ -124,12 +130,12 @@ function clearSchedule() {
 function saveSchedule() {
     const shiftsvalue = [];
     document.querySelectorAll('.shift-select').forEach(select => {
-        shiftsvalue.push(select.value);
+        const selectedText = select.options[select.selectedIndex].textContent;
+        shiftsvalue.push(selectedText);
     });
-    document.getElementById('hiddenUserName').value = getUserName();
     document.getElementById('hiddenSelectDate').value = document.getElementById('selectDate').value;
-console.log(shiftsvalue);
-
+    document.getElementById('hiddenStartOfWeek').value = globalStartOfWeek.toISOString().slice(0, 10);
+    document.getElementById('hiddenEndOfWeek').value = globalEndOfWeek.toISOString().slice(0, 10);
     document.getElementById('hiddenShifts').value = JSON.stringify(shiftsvalue);
     document.querySelector("#scheduleFormdata").submit();
 }

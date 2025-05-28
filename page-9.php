@@ -109,7 +109,7 @@ get_header();
                                                     echo "<tr><td>Thứ 6</td><td>$shifts5</td></tr>";
                                                     echo "<tr><td>Thứ 7</td><td>$shifts6</td></tr>";
 
-                                                    echo "<script>
+                                                    echo "<script>  
                                                         document.getElementById('scheduleContainer').style.display = 'block';
                                                         document.getElementById('weekRange').innerText = '$startDate';
                                                     </script>";
@@ -124,6 +124,8 @@ get_header();
                                     <input type="hidden" id="formAction" name="action" value="">
                                     <input type="hidden" id="hiddenUserID" name="user_id" value="<?php echo get_current_user_id(); ?>">
                                     <input type="hidden" id="hiddenSelectDate" name="startDate" value="<?php echo isset($_GET['selectDate']) ? esc_attr($_GET['selectDate']) : ''; ?>">
+                                    <input type="hidden" id="hiddenStartOfWeek" name="startOfWeek" value="">
+                                    <input type="hidden" id="hiddenEndOfWeek" name="endOfWeek" value="">
                                     <input type="hidden" id="hiddenShifts" name="shifts">
                                     <button type="submit" id="saveSchedule">Lưu lịch</button>
                                     <button type="submit" id="clearSchedule">Xoá lịch</button>
